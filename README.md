@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portal Olíbano
 
-## Getting Started
+Portal Olíbano é a nova área logada para distribuir ebooks, trilhas sonoras e experiências das Práticas Integrativas Complementares. O objetivo deste repositório é fornecer um ponto de partida seguro para integrar um provedor de identidade (Auth0, Clerk, Supabase Auth, etc.) e liberar conteúdos como o Ebook 01 através de `/portal`.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Next.js 16 (App Router + TypeScript)
+- Tailwind CSS 4 com tokens customizados da identidade Olíbano
+- next/font com Lato e Cormorant Garamond
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requisitos
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 18.18+ (recomendado 20 LTS)
+- npm 10+
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Configuração
 
-## Learn More
+1. Instale as dependências:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Copie o arquivo `.env.example` para `.env.local` e preencha com as credenciais do provedor escolhido:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   cp .env.example .env.local
+   ```
 
-## Deploy on Vercel
+3. Execute o servidor de desenvolvimento:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Acesse `http://localhost:3000/login`. Após integrar autenticação, redirecione usuários autenticados para `/portal`.
+
+## Scripts adicionais
+
+| Script          | Descrição                                         |
+| ---------------- | ------------------------------------------------- |
+| `npm run build` | Gera o bundle de produção do Next.js.             |
+| `npm run start` | Inicia o servidor já compilado (`npm run build`). |
+| `npm run lint`  | Executa o ESLint com a config oficial do Next.js. |
+| `npm run format`| Aplica o Prettier em todo o projeto.              |
+
+Commits passam automaticamente por `npm run lint` via Husky (arquivo `.husky/pre-commit`).
+
+## Estrutura principal
+
+- `src/app/login`: tela de login com formulário placeholder e instruções para conectar o provider.
+- `src/app/portal`: home logada com cards de materiais e checklist técnico.
+- `src/data/materials.ts`: mock com materiais (Ebook 01, trilhas binaurais, workshops).
+- `.env.example`: variáveis esperadas para autenticação e URL pública.
+
+## Próximos passos para autenticação real
+
+1. Escolha um provedor (Auth0, Clerk, etc.) e preencha as variáveis de ambiente.
+2. Crie um middleware (`src/middleware.ts`) que verifique o cookie/JWT e redirecione visitantes não autenticados para `/login`.
+3. Substitua o formulário de `/login` pelo componente oficial do provider (widget ou chamada API).
+4. Após validar a sessão, direcione o usuário para `/portal` e carregue os conteúdos a partir de um CMS/API.
+
+## Deploy na Vercel
+
+1. Configure um novo projeto apontando para este repositório.
+2. Defina as variáveis de ambiente em **Project Settings → Environment Variables**.
+3. Faça o deploy (`main` ou branch especificada). Após a publicação, você pode atribuir um domínio personalizado, como `portal.olibanovip.com.br`.
+
+## Suporte
+
+Abra uma issue ou converse com a equipe Olíbano para priorizar integrações (pagamentos, CMS, uploads, etc.).
