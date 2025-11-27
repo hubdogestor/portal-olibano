@@ -18,8 +18,8 @@ const ensureEnv = () => {
 
 const cookieDefaults = { path: '/' } as const;
 
-type MutableCookieStore = {
-  get: (name: string) => { value: string } | undefined;
+type CookieStore = Awaited<ReturnType<typeof cookies>>;
+type MutableCookieStore = CookieStore & {
   set?: (name: string, value: string, options?: CookieOptions) => void;
   delete?: (name: string, options?: CookieOptions) => void;
 };
@@ -36,8 +36,8 @@ const createAdapterFromStore = (store: MutableCookieStore) => ({
   },
 });
 
-export const getServerComponentClient = (): SupabaseClient<Database> => {
-  const cookieStore = cookies() as unknown as MutableCookieStore;
+export const getServerComponentClient = async (): Promise<SupabaseClient<Database>> => {
+  const cookieStore = (await cookies()) as MutableCookieStore;
   const { url, anonKey } = ensureEnv();
 
   return createServerClient<Database>(url, anonKey, {
@@ -45,8 +45,8 @@ export const getServerComponentClient = (): SupabaseClient<Database> => {
   });
 };
 
-export const getServerActionClient = (): SupabaseClient<Database> => {
-  const cookieStore = cookies() as unknown as MutableCookieStore;
+export const getServerActionClient = async (): Promise<SupabaseClient<Database>> => {
+  const cookieStore = (await cookies()) as MutableCookieStore;
   const { url, anonKey } = ensureEnv();
 
   return createServerClient<Database>(url, anonKey, {

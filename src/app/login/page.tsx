@@ -13,12 +13,14 @@ const highlights = [
   "Materiais impressos e digitais alinhados à marca",
 ];
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: { redirectTo?: string };
+  searchParams?: Promise<{ redirectTo?: string }>;
 }) {
-  const redirectTo = typeof searchParams?.redirectTo === "string" ? searchParams.redirectTo : undefined;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const redirectTo =
+    typeof resolvedSearchParams?.redirectTo === "string" ? resolvedSearchParams.redirectTo : undefined;
   return (
     <div className="min-h-screen grid bg-body-gradient lg:grid-cols-[1.1fr_0.9fr]">
       <div className="brand-panel relative hidden overflow-hidden rounded-r-[4rem] p-16 lg:flex">

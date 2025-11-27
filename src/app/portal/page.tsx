@@ -29,7 +29,7 @@ const collectionHighlights = [
 ];
 
 export default async function PortalPage() {
-  const supabase = getServerComponentClient();
+  const supabase = await getServerComponentClient();
   const {
     data: { session },
   } = await supabase.auth.getSession();

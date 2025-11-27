@@ -23,7 +23,7 @@ export const loginAction = async (_: LoginFormState, formData: FormData): Promis
     return { error: 'A senha precisa ter ao menos 6 caracteres.' };
   }
 
-  const supabase = getServerActionClient();
+  const supabase = await getServerActionClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
@@ -35,7 +35,7 @@ export const loginAction = async (_: LoginFormState, formData: FormData): Promis
 };
 
 export const logoutAction = async (): Promise<void> => {
-  const supabase = getServerActionClient();
+  const supabase = await getServerActionClient();
   await supabase.auth.signOut();
   redirect('/login');
 };

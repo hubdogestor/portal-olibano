@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 
 import { loginAction, type LoginFormState } from '@/app/actions/auth';
 
@@ -11,7 +12,7 @@ type Props = {
 };
 
 export function LoginForm({ redirectTo = '/portal' }: Props) {
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const [state, formAction] = useActionState(loginAction, initialState);
 
   return (
     <form className="mt-8 space-y-4" action={formAction} aria-label="Formulário de login">
