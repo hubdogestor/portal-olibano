@@ -23,14 +23,10 @@ const createMiddlewareSupabaseClient = (req: NextRequest, res: NextResponse) => 
     cookies: {
       get: (name) => req.cookies.get(name)?.value,
       set: (name, value, options) => {
-        res.cookies.set(name, value, options);
+        res.cookies.set({ name, value, path: '/', ...options });
       },
       remove: (name, options) => {
-        if (options) {
-          res.cookies.delete({ name, ...options });
-        } else {
-          res.cookies.delete(name);
-        }
+        res.cookies.delete({ name, path: '/', ...options });
       },
     },
   });
