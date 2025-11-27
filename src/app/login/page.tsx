@@ -1,17 +1,24 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
+import { LoginForm } from "./LoginForm";
+
 export const metadata: Metadata = {
   title: "Login | Portal Olíbano",
 };
 
 const roadmap = [
-  "Verificação de credenciais via Auth0 / Clerk",
+  "Verificação de credenciais via Supabase",
   "Single Sign-On para parceiros",
   "Perfis com acesso segmentado a materiais",
 ];
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams?: { redirectTo?: string };
+}) {
+  const redirectTo = typeof searchParams?.redirectTo === "string" ? searchParams.redirectTo : undefined;
   return (
     <div className="min-h-screen grid bg-body-gradient lg:grid-cols-[1.1fr_0.9fr]">
       <div className="relative hidden overflow-hidden rounded-r-[4rem] bg-gradient-to-br from-olibano-forest via-olibano-ink to-olibano-terracotta/80 p-16 text-white lg:flex">
@@ -47,40 +54,16 @@ export default function LoginPage() {
           <div className="space-y-3">
             <h2 className="text-4xl font-serif text-olibano-forest">Portal Olíbano</h2>
             <p className="text-sm text-olibano-forest/70">
-              Configure seu provedor de autenticação e troque este formulário pelo widget/SDK oficial.
-              O botão abaixo permanece desabilitado até que as credenciais reais estejam prontas.
+              Informe as credenciais liberadas no Supabase Authentication. Esta ação salva o cookie de sessão e
+              direciona para a área segura automaticamente.
             </p>
           </div>
 
-          <form className="mt-8 space-y-4" aria-label="Formulário de login placeholder">
-            <label className="block text-sm font-semibold text-olibano-forest/80">
-              Usuário ou e-mail
-              <input
-                type="email"
-                placeholder="voce@olibano.com"
-                className="mt-2 w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-sm text-olibano-forest focus:border-olibano-terracotta focus:outline-none focus:ring-2 focus:ring-olibano-terracotta/40"
-              />
-            </label>
-            <label className="block text-sm font-semibold text-olibano-forest/80">
-              Senha
-              <input
-                type="password"
-                placeholder="********"
-                className="mt-2 w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-sm text-olibano-forest focus:border-olibano-terracotta focus:outline-none focus:ring-2 focus:ring-olibano-terracotta/40"
-              />
-            </label>
-            <button
-              type="button"
-              disabled
-              className="w-full rounded-2xl bg-gradient-to-r from-olibano-gold to-olibano-terracotta py-3 font-semibold uppercase tracking-[0.4em] text-olibano-forest/90 opacity-80"
-            >
-              Autenticar (aguardando provider)
-            </button>
-          </form>
+          <LoginForm redirectTo={redirectTo} />
 
           <div className="mt-8 space-y-3 text-sm text-olibano-forest/70">
             <p>
-              Dica: após conectar o provider, direcione o usuário autenticado para <code className="rounded bg-olibano-cream/70 px-2 py-1">/portal</code>.
+              Dica: após o login a sessão já direciona automaticamente para <code className="rounded bg-olibano-cream/70 px-2 py-1">/portal</code>.
             </p>
             <p>
               Precisa visualizar o layout final?

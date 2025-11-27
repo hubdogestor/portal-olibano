@@ -1,6 +1,6 @@
 # Portal Olíbano
 
-Portal Olíbano é a nova área logada para distribuir ebooks, trilhas sonoras e experiências das Práticas Integrativas Complementares. O objetivo deste repositório é fornecer um ponto de partida seguro para integrar um provedor de identidade (Auth0, Clerk, Supabase Auth, etc.) e liberar conteúdos como o Ebook 01 através de `/portal`.
+Portal Olíbano é a nova área logada para distribuir ebooks, trilhas sonoras e experiências das Práticas Integrativas Complementares. O objetivo deste repositório é fornecer um ponto de partida seguro para integrar o Supabase Auth (já configurado) e liberar conteúdos como o Ebook 01 através de `/portal`.
 
 ## Stack
 
@@ -21,19 +21,27 @@ Portal Olíbano é a nova área logada para distribuir ebooks, trilhas sonoras e
    npm install
    ```
 
-2. Copie o arquivo `.env.example` para `.env.local` e preencha com as credenciais do provedor escolhido:
+2. Copie o arquivo `.env.example` para `.env.local` e preencha com as credenciais do Supabase (Dashboard → Settings → API). Todas as variáveis são obrigatórias:
 
    ```bash
    cp .env.example .env.local
    ```
 
-3. Execute o servidor de desenvolvimento:
+3. Preencha:
+
+   - `NEXT_PUBLIC_SUPABASE_URL`: URL do projeto (formato `https://xyz.supabase.co`).
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: chave pública (anon) para chamadas client-side.
+   - `SUPABASE_SERVICE_ROLE_KEY`: chave com acesso de serviço (necessária para rotinas administrativas e geração de JWT server-side).
+   - `SUPABASE_JWT_SECRET`: segredo JWT disponível na mesma tela, usado para validar sessões no middleware.
+   - `NEXT_PUBLIC_PORTAL_URL`: URL pública utilizada em callbacks de e-mail mágica/SSO (ex.: `https://portal.olibanovip.com.br`).
+
+4. Execute o servidor de desenvolvimento:
 
    ```bash
    npm run dev
    ```
 
-4. Acesse `http://localhost:3000/login`. Após integrar autenticação, redirecione usuários autenticados para `/portal`.
+5. Acesse `http://localhost:3000/login`. O formulário utiliza ações do servidor (`src/app/actions/auth.ts`) para chamar o Supabase e salvar o cookie. Usuários autenticados são redirecionados automaticamente para `/portal`.
 
 ## Scripts adicionais
 
@@ -48,17 +56,27 @@ Commits passam automaticamente por `npm run lint` via Husky (arquivo `.husky/pre
 
 ## Estrutura principal
 
-- `src/app/login`: tela de login com formulário placeholder e instruções para conectar o provider.
-- `src/app/portal`: home logada com cards de materiais e checklist técnico.
+- `src/app/login`: tela de login conectada ao Supabase Auth (e-mail + senha) com suporte a redirecionamento.
+- `src/app/portal`: home logada, carrega o usuário autenticado e oferece botão de logout.
+- `src/app/actions/auth.ts`: ações do servidor (login/logout) reutilizadas por formulários e botões.
+- `src/lib/supabase`: clientes compartilhados para browser, componentes do servidor, actions, route-handlers e middleware.
 - `src/data/materials.ts`: mock com materiais (Ebook 01, trilhas binaurais, workshops).
 - `.env.example`: variáveis esperadas para autenticação e URL pública.
+- `middleware.ts`: protege `/portal` (e subrotas) e impede usuários logados de acessarem `/login` novamente.
 
-## Próximos passos para autenticação real
+## Fluxo de autenticação (Supabase)
 
-1. Escolha um provedor (Auth0, Clerk, etc.) e preencha as variáveis de ambiente.
-2. Crie um middleware (`src/middleware.ts`) que verifique o cookie/JWT e redirecione visitantes não autenticados para `/login`.
-3. Substitua o formulário de `/login` pelo componente oficial do provider (widget ou chamada API).
-4. Após validar a sessão, direcione o usuário para `/portal` e carregue os conteúdos a partir de um CMS/API.
+1. O middleware (`middleware.ts`) garante que somente sessões válidas da Supabase cheguem a `/portal`.
+2. Na página `/login`, o formulário chama `loginAction` que executa `supabase.auth.signInWithPassword` no servidor. Ao concluir, o usuário segue para `/portal` (ou para o caminho definido em `redirectTo`).
+3. Em `/portal`, `getServerComponentClient` busca a sessão, renderiza os dados do usuário e exibe `LogoutButton`, que chama `logoutAction`.
+4. O helper `src/lib/supabase/client.ts` fixa o client browser-side para futuras telas client components (uploaders, chats, etc.).
+
+Para expandir:
+
+1. Habilite magic links/OTP ou provedores OAuth diretamente no Supabase Auth e reutilize o mesmo cliente.
+2. Ajuste `PROTECTED_PREFIXES` em `middleware.ts` para cobrir novas áreas (ex.: `/materiais`).
+3. Use `SUPABASE_SERVICE_ROLE_KEY` apenas em rotas protegidas server-side para buscar dados reais (por exemplo, materiais em uma tabela `materials`).
+4. Caso deseje outro IdP (Auth0/Clerk), basta substituir os helpers em `src/lib/supabase` e as ações mantendo o middleware como referência.
 
 ## Deploy na Vercel
 

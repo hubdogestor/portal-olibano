@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { getServerComponentClient } from "@/lib/supabase/server";
 import { materials, type Material } from "@/data/materials";
+import { LogoutButton } from "./LogoutButton";
 
 const statusTokens: Record<Material["status"], { label: string; className: string }> = {
   disponivel: {
@@ -17,26 +21,40 @@ export const metadata: Metadata = {
   title: "Portal | Olíbano",
 };
 
-export default function PortalPage() {
+export default async function PortalPage() {
+  const supabase = getServerComponentClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  const { user } = session;
+  const displayName = (user.user_metadata.full_name as string | undefined) ?? user.email ?? "Parceira Olíbano";
+  const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString("pt-BR") : null;
+
   return (
     <div className="min-h-screen px-6 py-16 lg:px-16">
       <header className="mx-auto flex w-full max-w-5xl flex-col gap-4 text-center">
         <p className="olibano-label text-olibano-forest/50">Área autenticada</p>
         <h1 className="text-5xl font-serif text-olibano-forest">Bem-vinda(o) ao Portal Olíbano</h1>
         <p className="text-lg text-olibano-forest/70">
-          Esta rota será protegida por middleware assim que o provedor de identidade estiver configurado.
-          Até lá, use este layout para validar conteúdos, cards e copy.
+          Conteúdos liberados somente após validação via Supabase Authentication. O middleware garante que somente
+          sessões válidas cheguem até aqui.
         </p>
       </header>
 
       <section className="mx-auto mt-16 w-full max-w-5xl space-y-6">
-        <div className="rounded-3xl border border-olibano-sage/40 bg-white/80 p-6 text-sm text-olibano-forest/70 shadow-lg">
-          <strong className="text-olibano-forest">Checklist Técnico</strong>
-          <ol className="mt-3 list-decimal space-y-1 pl-4">
-            <li>Configurar provider (Auth0/Clerk/Supabase) e salvar segredos em <code>.env.local</code>.</li>
-            <li>Criar middleware que verifica o cookie de sessão e redireciona usuários não autenticados para <code>/login</code>.</li>
-            <li>Usar as variáveis expostas via <code>process.env</code> para buscar materiais via API ou CMS.</li>
-          </ol>
+        <div className="flex flex-col gap-4 rounded-3xl border border-olibano-sage/40 bg-white/90 p-6 text-sm text-olibano-forest/80 shadow-lg lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p className="olibano-label text-xs text-olibano-forest/60">Sessão ativa</p>
+            <h2 className="text-2xl font-serif text-olibano-forest">Olá, {displayName}</h2>
+            <p className="text-olibano-forest/70">Credencial: {user.email}</p>
+            {lastSignIn && <p className="text-xs text-olibano-forest/60">Último acesso: {lastSignIn}</p>}
+          </div>
+          <LogoutButton />
         </div>
 
         <div className="card-grid">
