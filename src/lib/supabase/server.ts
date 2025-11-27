@@ -7,8 +7,8 @@ import type { Database } from './types';
 
 type CookieAdapter = {
   get?: (name: string) => Promise<string | null | undefined> | string | null | undefined;
-  set?: (name: string, value: string, options: CookieOptions) => Promise<void> | void;
-  remove?: (name: string, options: CookieOptions) => Promise<void> | void;
+  set?: (name: string, value: string, options?: CookieOptions) => Promise<void> | void;
+  remove?: (name: string, options?: CookieOptions) => Promise<void> | void;
 };
 
 const getSupabaseCredentials = () => {
@@ -41,16 +41,16 @@ export const getServerComponentClient = (): SupabaseClient<Database> => {
 export const getServerActionClient = (): SupabaseClient<Database> => {
   const cookieStore = cookies() as unknown as {
     get: (name: string) => { value: string } | undefined;
-    set?: (options: { name: string; value: string } & CookieOptions) => void;
-    delete?: (options: { name: string } & CookieOptions) => void;
+    set?: (name: string, value: string, options?: CookieOptions) => void;
+    delete?: (name: string, options?: CookieOptions) => void;
   };
   return createServerSupabaseClient({
     get: (name) => cookieStore.get(name)?.value,
     set: (name, value, options) => {
-      cookieStore.set?.({ name, value, ...options });
+      cookieStore.set?.(name, value, options);
     },
     remove: (name, options) => {
-      cookieStore.delete?.({ name, ...options });
+      cookieStore.delete?.(name, options);
     },
   });
 };
@@ -62,9 +62,13 @@ export const getRouteHandlerClient = (
   createServerSupabaseClient({
     get: (name) => req.cookies.get(name)?.value,
     set: (name, value, options) => {
-      res.cookies.set({ name, value, ...options });
+      res.cookies.set(name, value, options);
     },
     remove: (name, options) => {
-      res.cookies.delete({ name, ...options });
+      if (options) {
+        res.cookies.delete({ name, ...options });
+      } else {
+        res.cookies.delete(name);
+      }
     },
   });

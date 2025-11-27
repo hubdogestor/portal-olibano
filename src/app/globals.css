@@ -76,3 +76,30 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.brand-panel {
+  background-image: linear-gradient(135deg, rgba(15, 28, 24, 0.85), rgba(31, 51, 42, 0.6)),
+    url('/brand/pattern-texture.png');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.brand-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 120px rgba(15, 28, 24, 0.6);
+  pointer-events: none;
+}
+
+.portal-hero {
+  background-image: linear-gradient(120deg, rgba(246, 242, 236, 0.96), rgba(255, 255, 255, 0.75)),
+    url('/brand/pattern-texture.png');
+  background-size: 140%;
+  background-position: top right;
+  border-radius: var(--olibano-radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--olibano-shadow-soft);
+}

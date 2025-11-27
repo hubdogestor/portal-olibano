@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -21,6 +22,12 @@ export const metadata: Metadata = {
   title: "Portal | Olíbano",
 };
 
+const collectionHighlights = [
+  "Sequências de respiração consciente com áudio guiado",
+  "Ebooks autorais com trilhas e exercícios complementares",
+  "Materiais impressos e digitais alinhados ao padrão cromático",
+];
+
 export default async function PortalPage() {
   const supabase = getServerComponentClient();
   const {
@@ -36,23 +43,42 @@ export default async function PortalPage() {
   const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString("pt-BR") : null;
 
   return (
-    <div className="min-h-screen px-6 py-16 lg:px-16">
-      <header className="mx-auto flex w-full max-w-5xl flex-col gap-4 text-center">
-        <p className="olibano-label text-olibano-forest/50">Área autenticada</p>
-        <h1 className="text-5xl font-serif text-olibano-forest">Bem-vinda(o) ao Portal Olíbano</h1>
-        <p className="text-lg text-olibano-forest/70">
-          Conteúdos liberados somente após validação via Supabase Authentication. O middleware garante que somente
-          sessões válidas cheguem até aqui.
-        </p>
-      </header>
+    <div className="min-h-screen px-6 py-12 lg:px-16">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex items-center gap-4">
+          <Image src="/brand/logo-olibano.png" alt="Logo Olíbano" width={160} height={60} priority />
+          <p className="text-xs uppercase tracking-[0.4em] text-olibano-forest/70">Press Kit Exclusivo</p>
+        </div>
+        <div className="flex flex-col items-start gap-2 text-sm text-olibano-forest/70 lg:items-end">
+          <p className="font-semibold text-olibano-forest">{displayName}</p>
+          <p>{user.email}</p>
+          {lastSignIn && <p className="text-olibano-forest/60">Último acesso: {lastSignIn}</p>}
+        </div>
+      </div>
 
-      <section className="mx-auto mt-16 w-full max-w-5xl space-y-6">
-        <div className="flex flex-col gap-4 rounded-3xl border border-olibano-sage/40 bg-white/90 p-6 text-sm text-olibano-forest/80 shadow-lg lg:flex-row lg:items-center lg:justify-between">
+      <section className="portal-hero mx-auto mt-10 w-full max-w-5xl p-10">
+        <div className="flex flex-col gap-6 text-center lg:text-left">
+          <p className="olibano-label text-olibano-forest/60">Coleção autenticada</p>
+          <h1 className="text-4xl font-serif text-olibano-forest">Experiências completas do Olíbano</h1>
+          <p className="text-lg text-olibano-forest/70">
+            Acesse meditações originais, apostilas e assets gráficos para fortalecer sua presença como facilitadora da
+            marca.
+          </p>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {collectionHighlights.map((item) => (
+              <div key={item} className="rounded-2xl border border-olibano-sage/40 bg-white/70 px-4 py-5 text-sm text-olibano-forest/80">
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto mt-12 w-full max-w-5xl space-y-6">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="olibano-label text-xs text-olibano-forest/60">Sessão ativa</p>
-            <h2 className="text-2xl font-serif text-olibano-forest">Olá, {displayName}</h2>
-            <p className="text-olibano-forest/70">Credencial: {user.email}</p>
-            {lastSignIn && <p className="text-xs text-olibano-forest/60">Último acesso: {lastSignIn}</p>}
+            <p className="olibano-label text-olibano-forest/60">Materiais</p>
+            <h2 className="text-3xl font-serif text-olibano-forest">Seleção curada para o seu encontro</h2>
           </div>
           <LogoutButton />
         </div>
