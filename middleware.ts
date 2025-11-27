@@ -1,14 +1,40 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { createServerClient } from '@supabase/ssr';
 
 import type { Database } from '@/lib/supabase/types';
 
 const PROTECTED_PREFIXES = ['/portal'];
 
+const getSupabaseEnv = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+  }
+
+  return { url, anonKey } as const;
+};
+
+const createMiddlewareSupabaseClient = (req: NextRequest, res: NextResponse) => {
+  const { url, anonKey } = getSupabaseEnv();
+  return createServerClient<Database>(url, anonKey, {
+    cookies: {
+      get: (name) => req.cookies.get(name)?.value,
+      set: (name, value, options) => {
+        res.cookies.set({ name, value, ...options });
+      },
+      remove: (name, options) => {
+        res.cookies.delete({ name, ...options });
+      },
+    },
+  });
+};
+
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-  const supabase = createMiddlewareClient<Database>({ req, res });
+  const supabase = createMiddlewareSupabaseClient(req, res);
   const {
     data: { session },
   } = await supabase.auth.getSession();
