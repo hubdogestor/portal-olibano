@@ -6,6 +6,7 @@ export type Material = {
   description: string;
   focus: string;
   updatedAt: string;
+  href?: string;
 };
 
 export const materials: Material[] = [
@@ -17,6 +18,7 @@ export const materials: Material[] = [
     description: "Versão interativa do material entregue neste projeto, pronta para leitura em navegadores.",
     focus: "Respiração, Aromaterapia, Ondas Binaurais",
     updatedAt: "Nov/2025",
+    href: "/portal/ebook",
   },
   {
     slug: "trilhas-binaurais-beta",

@@ -86,6 +86,8 @@ export default async function PortalPage() {
         <div className="card-grid">
           {materials.map((material) => {
             const badge = statusTokens[material.status];
+            const isAvailable = material.status === "disponivel" && Boolean(material.href);
+            const linkTarget = isAvailable ? material.href! : "#";
             return (
               <article key={material.slug} className="olibano-shell flex flex-col justify-between p-8">
                 <div className="space-y-4">
@@ -107,15 +109,15 @@ export default async function PortalPage() {
                       : "Status bloqueado até a próxima publicação."}
                   </p>
                   <Link
-                    href={material.status === "disponivel" ? `/materiais/${material.slug}` : "#"}
-                    aria-disabled={material.status !== "disponivel"}
+                    href={linkTarget}
+                    aria-disabled={!isAvailable}
                     className={`rounded-full border px-5 py-2 text-xs font-semibold uppercase tracking-[0.4em] transition ${
-                      material.status === "disponivel"
+                      isAvailable
                         ? "cursor-pointer border-olibano-forest text-olibano-forest hover:bg-olibano-forest hover:text-white"
                         : "cursor-not-allowed border-olibano-sage/60 text-olibano-sage"
                     }`}
                   >
-                    {material.status === "disponivel" ? "Acessar" : "Bloqueado"}
+                    {isAvailable ? "Acessar" : "Bloqueado"}
                   </Link>
                 </div>
               </article>

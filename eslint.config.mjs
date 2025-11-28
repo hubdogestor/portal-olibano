@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Legacy Vite project kept only for reference.
+    "olibano-ebook1/**",
   ]),
 ]);
 
