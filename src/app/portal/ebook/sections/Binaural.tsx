@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { AlertTriangle, Headphones, Pause, Play, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { binauralTracks } from '../data/binauralTracks';
@@ -61,7 +62,7 @@ const BinauralTrackCard = ({ track, isActive, onToggle, onEnded }: BinauralTrack
       <div className="relative z-10 flex flex-col gap-6 p-6">
         <div className="flex gap-5">
           <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-md border border-olibano-sage/30 shrink-0">
-            <img src={track.cover} alt={`Arte da faixa ${track.title}`} className="w-full h-full object-cover" loading="lazy" />
+            <Image src={track.cover} alt={`Arte da faixa ${track.title}`} width={192} height={192} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 space-y-2">
             <div className="flex flex-wrap items-center gap-3">

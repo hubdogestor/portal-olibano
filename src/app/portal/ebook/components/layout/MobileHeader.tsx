@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 
 type MobileHeaderProps = {
@@ -10,13 +11,16 @@ type MobileHeaderProps = {
 const MobileHeader = ({ isMenuOpen, onToggleMenu }: MobileHeaderProps) => (
   <div className="md:hidden fixed top-0 w-full bg-white/95 backdrop-blur-lg z-30 border-b border-olibano-sage/20 px-5 py-4 flex justify-between items-center shadow-lg">
     <div className="flex items-center gap-3">
-      <img
+      <Image
         src="/images/logo-simbolo.png"
         alt="Olíbano"
+        width={64}
+        height={64}
         className="w-8 h-8 object-contain"
         onError={(event) => {
           event.currentTarget.style.display = 'none';
         }}
+        priority
       />
       <div>
         <span className="text-olibano-forest font-serif font-bold tracking-[0.2em] text-xs block">OLÍBANO</span>

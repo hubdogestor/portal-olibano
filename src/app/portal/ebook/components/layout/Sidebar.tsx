@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { menuItems } from '../../data/menuItems';
 import type { SectionId } from '../../data/menuItems';
 
@@ -18,9 +19,11 @@ const Sidebar = ({ activeSection, onNavigate }: SidebarProps) => (
     }}
   >
     <div className="p-8 border-b border-olibano-sage/10 flex flex-col items-center bg-gradient-to-b from-olibano-cream to-white">
-      <img
+      <Image
         src="/images/logo-simbolo.png"
         alt="Olíbano"
+        width={160}
+        height={160}
         className="w-16 h-16 object-contain mb-4"
         onError={(event) => {
           event.currentTarget.style.display = 'none';
@@ -29,6 +32,7 @@ const Sidebar = ({ activeSection, onNavigate }: SidebarProps) => (
             fallback.style.display = 'flex';
           }
         }}
+        priority
       />
       <div className="w-16 h-16 hidden bg-gradient-to-br from-olibano-forest to-olibano-forest/80 rounded-full items-center justify-center text-olibano-cream font-serif font-bold text-2xl mb-4 shadow-lg">
         O

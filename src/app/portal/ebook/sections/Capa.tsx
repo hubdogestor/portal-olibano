@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { ChevronRight, Sparkles } from 'lucide-react';
 import GoldenCard from '../components/common/GoldenCard';
 
@@ -11,9 +12,11 @@ const Capa = ({ onStartReading }: CapaProps) => (
     <div className="absolute bottom-20 right-10 w-24 h-24 border border-olibano-sage/30 rounded-full"></div>
 
     <div className="mb-10">
-      <img
+      <Image
         src="/images/logo-simbolo.png"
         alt="Olíbano"
+        width={224}
+        height={224}
         className="w-28 h-28 object-contain drop-shadow-lg"
         onError={(event) => {
           event.currentTarget.style.display = 'none';
@@ -22,6 +25,7 @@ const Capa = ({ onStartReading }: CapaProps) => (
             fallback.style.display = 'flex';
           }
         }}
+        priority
       />
       <div className="w-28 h-28 hidden rounded-full border-2 border-olibano-gold bg-gradient-to-br from-olibano-cream to-olibano-sage/30 items-center justify-center">
         <Sparkles className="w-12 h-12 text-olibano-gold" />

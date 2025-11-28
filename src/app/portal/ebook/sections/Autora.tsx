@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Facebook, Heart, Instagram, MessageCircle, ShoppingBag } from 'lucide-react';
 import SectionWrapper from '../components/common/SectionWrapper';
 
@@ -23,7 +24,7 @@ const Autora = () => (
         </div>
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
           <div className="w-36 h-36 rounded-full border-4 border-white bg-olibano-cream flex items-center justify-center overflow-hidden shadow-xl">
-            <img src="/images/foto-betusa2.jpg" alt="Dra. Betusa" className="w-full h-full object-cover" />
+            <Image src="/images/foto-betusa2.jpg" alt="Dra. Betusa" width={288} height={288} className="w-full h-full object-cover" priority />
           </div>
         </div>
       </div>
@@ -44,9 +45,11 @@ const Autora = () => (
         <div className="mt-10 space-y-4">
           <div className="p-6 bg-gradient-to-br from-olibano-cream to-olibano-sage/20 rounded-2xl border border-olibano-sage/30">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <img
+              <Image
                 src="/images/logo-simbolo.png"
                 alt="Olíbano"
+                width={64}
+                height={64}
                 className="w-8 h-8 object-contain"
                 onError={(event) => {
                   event.currentTarget.style.display = 'none';
